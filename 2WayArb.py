@@ -150,7 +150,7 @@ if __name__ == "__main__":
     fig, ax = plt.subplots()
     ax.plot(o2_range, roi_values)
 
-    ax.axhline(0, color='red', linestyle='--', label='Break-even')
+    ax.axhline(0, color='red', linestyle='--')
     ax.axvline(o2, color='green', linestyle='--')
     ax.axhline(roi_values[np.where(o2_range == o2)[0][0]], color='green', linestyle='--')
 
@@ -160,7 +160,6 @@ if __name__ == "__main__":
     ax.set_xlabel("Odds for Outcome 2")
     ax.set_ylabel("ROI (%)")
     ax.set_title("ROI vs Odds for Outcome 2")
-    ax.legend(loc='upper right')
     ax.grid(True)
 
     st.pyplot(fig)
