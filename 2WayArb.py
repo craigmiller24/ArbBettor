@@ -132,7 +132,7 @@ def process_bets(o1: float, o2: float, T: float) -> Tuple[Optional[List[dict]], 
 if __name__ == "__main__":
     st.title("2-Way Arbitrage Betting Calculator")
 
-        st.header("Plot ROI vs Second Outcome Odds")
+    st.header("Plot ROI vs Second Outcome Odds")
     o1 = st.number_input("Input Known Odds (Decimal)", min_value=1.01, value=1.01, step=0.01)
     max_o2 = st.slider("Max Odds for Outcome 2 (Decimal)", min_value=20.0, max_value=500.0, value=100.0, step=0.01)
     o2_range = np.linspace(0, max_o2, 500)
@@ -155,7 +155,7 @@ if __name__ == "__main__":
     ax.grid(True)
 
     st.pyplot(fig)
-    
+
     st.header("Input Odds and Stake")
     o1 = st.number_input("Odds for Outcome 1 (Decimal)", min_value=1.01, value=1.01, step=0.01)
     o2 = st.number_input("Odds for Outcome 2 (Decimal)", min_value=1.01, value=1.01, step=0.01)
