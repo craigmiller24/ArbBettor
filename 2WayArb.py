@@ -134,7 +134,7 @@ if __name__ == "__main__":
 
     st.header("Plot ROI vs Second Outcome Odds")
     o1 = st.number_input("Input Known Odds (Decimal)", min_value=1.01, value=1.01, step=0.01)
-    o2 = st.number_input("Odds for Outcome 2 (Decimal)", min_value=1.01, value=1.01, step=0.01)
+    o2 = st.slider("Odds for Outcome 2 (Decimal)", min_value=1.01, value=1.01, step=0.01)
     max_o2 = st.slider("Max Odds for Outcome 2 (Decimal)", min_value=20.0, max_value=500.0, value=100.0, step=0.01)
     T = st.number_input("Total Stake (£)", min_value=0.01, value=100.0, step=1.0)
 
@@ -149,8 +149,11 @@ if __name__ == "__main__":
 
     fig, ax = plt.subplots()
     ax.plot(o2_range, roi_values)
-    ax.axhline(0, color='red', linestyle='--', label='Break-even')
 
+    ax.axhline(0, color='red', linestyle='--', label='Break-even')
+    ax.axvline(o2, color='green', linestyle='--')
+    ax.axhline(roi_values[np.where(o2_range == o2)[0][0]], color='green', linestyle='--')
+    
     ax.set_xlim(0, max_o2)
     ax.set_ylim(-5, max(roi_values) + 0.1 * max(roi_values))
 
