@@ -223,7 +223,7 @@ if __name__ == "__main__":
 
     # Inputs
     o1 = st.number_input("Outcome 1 odds (Decimal)", min_value=1.01, value=2.0, step=step)
-    max_o2 = st.slider("Maximum odds for Outcome 2 (Decimal)", min_value=10.0, max_value=500.0, value=10.0, step=step)
+    max_o2 = st.slider("Maximum odds for Outcome 2 (Decimal)", min_value=10.0, max_value=100.0, value=10.0, step=step)
     o2_range = np.round(np.arange(1.01, max_o2 + step, step),2)
     o2 = st.select_slider('Outcome 2 Odds:', options=o2_range.tolist(), value=o2_range[0])
 
