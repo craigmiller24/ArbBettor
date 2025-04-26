@@ -158,7 +158,7 @@ if __name__ == "__main__":
 
     else:
         st.header("Plot ROI vs Second Outcome Odds")
-        o1 = st.number_input("Input Known Odds (Decimal)", min_value=1.0, value=1.0, step=0.01)
+        o1 = st.number_input("Input Known Odds (Decimal)", min_value=1.01, value=1.01, step=0.01)
         max_o2 = st.slider("Max Odds for Outcome 2 (Decimal)", min_value=100.0, max_value=500.0, value=5.0, step=0.01)
         o2_range = np.linspace(0, max_o2, 500)
         roi_values = []
@@ -175,9 +175,8 @@ if __name__ == "__main__":
         ax.plot(o2_range, roi_values)
 
         ax.set_xlim(0, max_o2)
-        ax.set_ylim(0, max(roi_values) + 10)
+        ax.set_ylim(0, max(roi_values) + 0.1 * max(roi_values))
 
-        ax.axhline(0, color='red', linestyle='--')
         ax.set_xlabel("Odds for Outcome 2")
         ax.set_ylabel("ROI (%)")
         ax.set_title("ROI vs Odds for Outcome 2")
