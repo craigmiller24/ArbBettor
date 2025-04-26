@@ -97,6 +97,24 @@ def split_stakes(bets: List[dict], payout: float, o1: float, o2: float) -> None:
     # Update the bets with the newly calculated stakes
     update_bet(bets, stake1, stake2)
 
+def find_required_odds(known_odds: float, min_roi: float) -> Tuple[Optional[float], Optional[float]]:
+    """
+    Calculate the required odds for the second outcome to achieve a desired minimum ROI.
+
+    Args:
+        known_odds (float): The odds of the first bet.
+        min_roi (float): The desired minimum ROI in percentage.
+    Returns:
+        Tuple[float,float]: The required odds for the second outcome.
+    """
+    max_S = 1 / (1 + min_roi/100)
+    remaining = max_S - (1/known_odds)
+    if remaining <= 0:
+        return None, None
+    required_odds_min = 1 / remaining  # if known odds is smaller (we need other odds to be bigger)
+    required_odds_max = 1 / remaining  # if known odds is bigger (we need other odds to be smaller)
+    return round(required_odds_min, 3), round(required_odds_max, 3)
+
 def process_bets(o1: float, o2: float, T: float) -> Tuple[Optional[List[dict]], Optional[float], Optional[float]]:
     """
     Process the bets and calculate the payout and profit.
@@ -131,23 +149,40 @@ def process_bets(o1: float, o2: float, T: float) -> Tuple[Optional[List[dict]], 
 if __name__ == "__main__":
     st.title("2-Way Arbitrage Betting Calculator")
 
-    st.header("Input Odds and Stake")
-    o1 = st.number_input("Odds for Outcome 1 (Decimal)", min_value=0.01, value=2.0, step=0.01)
-    o2 = st.number_input("Odds for Outcome 2 (Decimal)", min_value=0.01, value=2.0, step=0.01)
-    T = st.number_input("Total Stake (£)", min_value=0.01, value=100.0, step=1.0)
+    mode = st.radio("Select Mode", ("Calculate Optimal Stakes", "Find Required Odds for Target ROI"))
 
-    if st.button("Calculate Optimal Stakes"):
-        bets, payout, profit = process_bets(o1, o2, T)
-        
-        # If no valid betting opportunity is found, return None
-        if bets is None:
-            st.error("No arbitrage opportunity exists with these odds.")
+    if mode == "Find Required Odds for Target ROI":
+        st.header("Input Known Odds and Desired Minimum ROI")
+        o1 = st.number_input("Known Odds (Decimal)", min_value=1.01, value=2.0, step=0.01)
+        min_roi = st.number_input("Minimum ROI (%)", min_value=0.0, value=0.5, step=0.1)
 
-        else:
-            # Calculate the return on investment (ROI)
-            roi = profit / T * 100
+        if st.button("Find Required Odds"):
+            required_odds_min, required_odds_max = find_required_odds_range(known_odds, min_roi)
+            if required_odds_min is None:
+                st.error("No suitable odds for second outcome to achieve the desired ROI.")
+            else:
+                st.success("Calculation Successful!")
+                st.write(f"Odds must be >= {required_odds_min} or <= {required_odds_max} to achieve a minimum ROI of {min_roi}%")
+    
+    elif mode == "Calculate Optimal Stakes":
+        st.header("Input Odds and Stake")
+        o1 = st.number_input("Odds for Outcome 1 (Decimal)", min_value=0.01, value=2.0, step=0.01)
+        o2 = st.number_input("Odds for Outcome 2 (Decimal)", min_value=0.01, value=2.0, step=0.01)
+        T = st.number_input("Total Stake (£)", min_value=0.01, value=100.0, step=1.0)
 
-            st.success("Arbitrage Opportunity Found!")
-            st.write(f"Stake on Bet 1: £{bets[0]['stake']}")
-            st.write(f"Stake on Bet 2: £{bets[1]['stake']}")
-            st.write(f"Guaranteed Profit: £{profit} ({roi:.2f}%)")
+        if st.button("Calculate Optimal Stakes"):
+            bets, payout, profit = process_bets(o1, o2, T)
+            
+            # If no valid betting opportunity is found, return None
+            if bets is None:
+                st.error("No arbitrage opportunity exists with these odds.")
+
+            else:
+                # Calculate the return on investment (ROI)
+                roi = (profit / T) * 100
+
+                st.success("Arbitrage Opportunity Found!")
+                st.write(f"Stake on Bet 1: £{bets[0]['stake']}")
+                st.write(f"Stake on Bet 2: £{bets[1]['stake']}")
+                st.write(f"Guaranteed Profit: £{profit} ({roi:.2f}%)")
+
