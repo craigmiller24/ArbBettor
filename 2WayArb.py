@@ -147,7 +147,7 @@ if __name__ == "__main__":
     ax.plot(o2_range, roi_values)
 
     ax.set_xlim(0, max_o2)
-    ax.set_ylim(-25, max(roi_values) + 0.1 * max(roi_values))
+    ax.set_ylim(-5, max(roi_values) + 0.1 * max(roi_values))
 
     ax.set_xlabel("Odds for Outcome 2")
     ax.set_ylabel("ROI (%)")
