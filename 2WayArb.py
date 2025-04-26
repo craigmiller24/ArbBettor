@@ -148,10 +148,10 @@ if __name__ == "__main__":
     fig, ax = plt.subplots()
     ax.plot(o2_range, roi_values)
 
-    ax.axhline(0, color='red', linestyle='--')
-    ax.axvline(o2, color='green', linestyle='--')
-    ax.axhline(roi_values[np.where(o2_range == o2)[0][0]], color='green', linestyle='--')
-    ax.plot(o2, roi_values[np.where(o2_range == o2)[0][0]], 'green', marker='x', label=f'ROI: {roi_values[np.where(o2_range == o2)[0][0]]:.2f}%')
+    ax.axhline(0, color='green', linestyle='--')
+    ax.axvline(o2, color='black', linestyle='--')
+    ax.axhline(roi_values[np.where(o2_range == o2)[0][0]], color='black', linestyle='--')
+    ax.plot(o2, roi_values[np.where(o2_range == o2)[0][0]], 'black', marker='x', label=f'ROI: {roi_values[np.where(o2_range == o2)[0][0]]:.2f}%')
     ax.legend(loc='lower right')
 
     ax.set_xlim(0, max_o2)
@@ -178,7 +178,7 @@ if __name__ == "__main__":
             roi = (profit / T) * 100
 
             st.success("Arbitrage Opportunity Found!")
-            st.write(f"Stake on Bet 1: £{bets[0]['stake']}")
-            st.write(f"Stake on Bet 2: £{bets[1]['stake']}")
+            st.write(f"Stake on Bet 1 at odds {o1:.2f}: £{bets[0]['stake']}")
+            st.write(f"Stake on Bet 2 at odds {o2:.2f}: £{bets[1]['stake']}")
             st.write(f"Guaranteed Profit: £{profit} ({roi:.2f}%)")
 
