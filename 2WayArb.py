@@ -172,7 +172,7 @@ if __name__ == "__main__":
             roi_values.append(roi)
 
         fig, ax = plt.subplots()
-        ax.plot(odds2_range, roi_values)
+        ax.plot(o2_range, roi_values)
         ax.axhline(0, color='red', linestyle='--')
         ax.set_xlabel("Odds for Outcome 2")
         ax.set_ylabel("ROI (%)")
