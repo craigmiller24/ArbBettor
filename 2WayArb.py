@@ -1,4 +1,4 @@
-from typing import List, Tuple, Optional
+from typing import List, Tuple, Optional, Dict
 import math as m
 import streamlit as st
 import numpy as np
@@ -26,14 +26,14 @@ def assess_risk_free(o1: float, o2: float) -> Tuple[float, bool]:
         o2 (float): The odds of the second bet.
     
     Returns:
-        tuple: (S (float): Total implied probability, valid (bool): True if the bets are risk-free; False otherwise).
+        tuple: (S (float): Total implied probability, is_risk_free (bool): True if the bets are risk-free; False otherwise).
     """
     
     # Calculate the total implied probabilitiy
     S = (1 / o1) + (1 / o2)
-    valid = S < 1
+    is_risk_free = S < 1
 
-    return S, valid
+    return S, is_risk_free
 
 def add_bet(bets: List[dict], odds: float) -> None:
     """
@@ -45,16 +45,14 @@ def add_bet(bets: List[dict], odds: float) -> None:
     """
     
     # For each bet, create a dictionary defining its odds, stake, return, and profit
-    new_bet = {
+    bets.append({
         'odds': odds,
         'stake': 0,
         'return': 0,
         'profit': 0
-    }
+    })
 
-    bets.append(new_bet)
-
-def update_bet(bets: List[dict], stake1: float, stake2: float) -> None:
+def update_bet(bets: List[Dict[str, float]], stake1: float, stake2: float) -> None:
     """
     Update the bets with the calculated return and profit.
     
@@ -64,37 +62,46 @@ def update_bet(bets: List[dict], stake1: float, stake2: float) -> None:
         stake2 (float): Stake for the second bet.
     """
 
-    # Update the stakes for each bet
+    # Update the first bet
     bets[0]['stake'] = stake1
-    bets[1]['stake'] = stake2
+    bets[0]['return'] = down(stake1 * bets[0]['odds'])
+    bets[0]['profit'] = down(bets[0]['return'] - stake1)
 
-    # Calculate the return and profit for each bet and update the bet dictionaries
-    for bet in bets:
-        bet['return'] = down(bet['stake'] * bet['odds'])
-        bet['profit'] = down(bet['return'] - bet['stake'])
+    # Update the second bet
+    bets[1]['stake'] = stake2
+    bets[1]['return'] = down(stake2 * bets[1]['odds'])
+    bets[1]['profit'] = down(bets[1]['return'] - stake2)
+
+def round_stake(stake: float, round_up: bool) -> float:
+    """
+    Round a stake to two decimal places, either up or down.
+
+    Args:
+        stake (float): The stake to round.
+        round_up (bool): Whether to round up (True) or down (False).
+
+    Returns:
+        float: The rounded stake.
+    """
+    return m.ceil(100 * stake) / 100 if round_up else down(stake)
 
 def split_stakes(bets: List[dict], payout: float, o1: float, o2: float) -> None:
     """
     Split the funds between the bets based on their odds.
-    
+
     Args:
         bets (list): List of bets.
         payout (float): The total payout following the bet.
         o1 (float): The odds of the first bet.
         o2 (float): The odds of the second bet.
     """
-
     # Calculate the stakes for each bet based on the payout and odds
     stake1 = payout / o1
     stake2 = payout / o2
 
-    # Round the stakes to two decimal places to reflect bookmaker's rules
-    if o1 < o2:
-        stake1 = m.ceil(100 * stake1) / 100
-        stake2 = down(stake2)
-    else:
-        stake1 = down(stake1)
-        stake2 = m.ceil(100 * stake2) / 100
+    # Round stakes based on the odds
+    stake1 = round_stake(stake1, round_up=(o1 < o2))
+    stake2 = round_stake(stake2, round_up=(o2 < o1))
 
     # Update the bets with the newly calculated stakes
     update_bet(bets, stake1, stake2)
@@ -112,9 +119,9 @@ def process_bets(o1: float, o2: float, T: float) -> Tuple[Optional[List[dict]], 
         tuple: (bets, profit) if valid, otherwise None.
     """
     # Check if the odds are valid for risk-free arbitrage betting
-    S, valid = assess_risk_free(o1, o2)
-    if not valid:
-        return None, None, None
+    S, is_risk_free = assess_risk_free(o1, o2)
+    if not is_risk_free:
+        return None, None
 
     # Construct the bets
     bets = []
@@ -140,22 +147,20 @@ def plot_roi(o1: float, o2: float, o2_range, max_o2: float) -> None:
         o2_range (array): Range of odds for Outcome 2.
         max_o2 (float): Maximum odds for Outcome 2.
     """
-    roi_values = []
-
-    for o2_val in o2_range:
-        S = (1/o1) + (1/o2_val)
-        roi = (1/S - 1) * 100
-        roi_values.append(roi)
+    # Vectorized calculation of ROI values
+    S = (1 / o1) + (1 / o2_range)
+    roi_values = (1 / S - 1) * 100
 
     # Create a plot for ROI vs Odds for Outcome 2
     fig, ax = plt.subplots()
     ax.plot(o2_range, roi_values)
 
     # Highlight the selected odds
+    selected_index = np.where(o2_range == o2)[0][0]
     ax.axhline(0, color='green', linestyle='--')
     ax.axvline(o2, color='black', linestyle='--')
-    ax.axhline(roi_values[np.where(o2_range == o2)[0][0]], color='black', linestyle='--')
-    ax.plot(o2, roi_values[np.where(o2_range == o2)[0][0]], 'black', marker='o', label=f'ROI: {roi_values[np.where(o2_range == o2)[0][0]]:.2f}%')
+    ax.axhline(roi_values[selected_index], color='black', linestyle='--')
+    ax.plot(o2, roi_values[selected_index], 'black', marker='o', label=f'ROI: {roi_values[selected_index]:.2f}%')
 
     # Format plot range
     ax.set_xlim(0, max_o2)
@@ -170,7 +175,7 @@ def plot_roi(o1: float, o2: float, o2_range, max_o2: float) -> None:
     # Display the plot
     st.pyplot(fig)
 
-def bet_data(bets, o1, o2):
+def bet_data(bets: List[Dict[str, float]], o1: float, o2: float) -> float:
     """
     Create a DataFrame with the bet data.
 
@@ -182,45 +187,33 @@ def bet_data(bets, o1, o2):
     Returns:
         float: The guaranteed minimum profit from the bets.
     """
-    # Format results 
-    stake1 = bets[0]['stake']
-    stake2 = bets[1]['stake']
+    # Extract bet details
+    stake1, stake2 = bets[0]['stake'], bets[1]['stake']
+    win1, win2 = bets[0]['return'], bets[1]['return']
 
-    win1 = bets[0]['return']
-    win2 = bets[1]['return']
-
-    profit1 = bets[0]['profit']
-    profit2 = bets[1]['profit']
+    # Precompute repeated values
+    loss1 = -stake1
+    loss2 = -stake2
+    net_profit1 = win1 - T
+    net_profit2 = win2 - T
 
     # Create DataFrame for the table
     data = {
-        "Bet 1 (Profit/Loss)": [
-            o1,
-            stake1,
-            f"{win1:.2f} ({profit1:.2f})",
-            f"{down(-stake1):.2f} ({down(-stake1):.2f})"
-        ],
-        "Bet 2 (Profit/Loss)": [
-            o2, 
-            stake2, 
-            f"{down(-stake2):.2f} ({down(-stake2):.2f})", 
-            f"{win2:.2f} ({profit2:.2f})"
-        ],
-        "Total (£)": [
-            None, 
-            f"{T:.2f}", 
-            f"{down(win1 - T):.2f}", 
-            f"{down(win2 - T):.2f}"
-        ]
+        "Bet 1": [o1, stake1, win1, loss1],
+        "Bet 2": [o2, stake2, loss2, win2],
+        "Profit (£)": ["", T, net_profit1, net_profit2],
     }
-    index = ["Odds (Decimal)", "Stake (£)", "Outcome 1 Return (£)", "Outcome 2 Return (£)"]
+    index = ["Odds (Decimal)", "Stake (£)", "Outcome 1 (£)", "Outcome 2 (£)"]
     df = pd.DataFrame(data, index=index)
+
+    # Apply formatting to the DataFrame
+    df = df.applymap(lambda x: f"{x:.2f}" if isinstance(x, (int, float)) else x)
 
     # Display results in a table
     st.table(df)
 
-    min_profit = min(down(win1 - T), down(win2 - T))
-
+    # Calculate and return the guaranteed minimum profit
+    min_profit = min(net_profit1, net_profit2)
     return min_profit
                 
 if __name__ == "__main__":
@@ -256,6 +249,6 @@ if __name__ == "__main__":
             # Display guaranteed profit with larger font
             st.markdown(f"""
             <div style='text-align: center; font-size:24px; padding:10px; border:2px solid green; border-radius:10px;'>
-            Guaranteed Profit: {profit} <strong>£{min_profit:.2f}</strong> ({roi:.2f}%)
+            Guaranteed Profit: <strong>£{min_profit:.2f}</strong> ({roi:.2f}%)
             </div>
             """, unsafe_allow_html=True)
