@@ -134,7 +134,7 @@ if __name__ == "__main__":
 
     st.header("Plot ROI vs Second Outcome Odds")
     o1 = st.number_input("Input Known Odds (Decimal)", min_value=1.01, value=1.01, step=0.01)
-    o2 = st.slider("Odds for Outcome 2 (Decimal)", min_value=1.01, max_value=500, value=1.01, step=0.01)
+    o2 = st.slider("Odds for Outcome 2 (Decimal)", min_value=1.01, max_value=500.0, value=1.01, step=0.01)
     max_o2 = st.slider("Max Odds for Outcome 2 (Decimal)", min_value=20.0, max_value=500.0, value=100.0, step=0.01)
     T = st.number_input("Total Stake (£)", min_value=0.01, value=100.0, step=1.0)
 
