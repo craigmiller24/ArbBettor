@@ -157,7 +157,7 @@ if __name__ == "__main__":
         min_roi = st.number_input("Minimum ROI (%)", min_value=0.0, value=0.5, step=0.1)
 
         if st.button("Find Required Odds"):
-            required_odds_min, required_odds_max = find_required_odds_range(known_odds, min_roi)
+            required_odds_min, required_odds_max = find_required_odds(known_odds, min_roi)
             if required_odds_min is None:
                 st.error("No suitable odds for second outcome to achieve the desired ROI.")
             else:
