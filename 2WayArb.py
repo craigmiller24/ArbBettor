@@ -141,7 +141,7 @@ if __name__ == "__main__":
     roi_values = []
 
     for o2_val in o2_range:
-        S = (1/o1) + (1/o2)
+        S = (1/o1) + (1/o2_val)
         roi = (1/S - 1) * 100
         roi_values.append(roi)
 
@@ -149,8 +149,8 @@ if __name__ == "__main__":
     ax.plot(o2_range, roi_values)
 
     ax.axhline(0, color='red', linestyle='--')
-    #ax.axvline(o2, color='green', linestyle='--')
-    #ax.axhline(roi_values[np.where(o2_range == o2)[0][0]], color='green', linestyle='--')
+    ax.axvline(o2, color='green', linestyle='--')
+    ax.axhline(roi_values[np.where(o2_range == o2)[0][0]], color='green', linestyle='--')
 
     ax.set_xlim(0, max_o2)
     ax.set_ylim(-5, max(roi_values) + 0.1 * max(roi_values))
