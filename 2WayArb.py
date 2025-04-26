@@ -191,7 +191,7 @@ if __name__ == "__main__":
 
             st.table(df)
 
-            min_profit = min(bets[0]['profit'], bets[1]['profit'])
+            min_profit = min(down((stake1 * o1) - T), down((stake2 * o2) - T))
             # Display guaranteed profit with larger font
             st.markdown(f"""
             <div style='text-align: center; font-size:24px; padding:10px; border:2px solid green; border-radius:10px;'>
