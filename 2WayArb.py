@@ -185,8 +185,8 @@ if __name__ == "__main__":
 
             # Create DataFrame for the table
             data = {
-                "Outcome 1": [o1, bets[0]['stake'], round(bets[0]['stake'] * o1, 2), round(bets[1]['stake'], 2), round((bets[0]['stake'] * o1) - (bets[0]['stake'] + bets[1]['stake']), 2), round(bets[1]['stake'] - (bets[0]['stake'] + bets[1]['stake']), 2)],
-                "Outcome 2": [o2, bets[1]['stake'], round(bets[0]['stake'], 2), round(bets[1]['stake'] * o2, 2), round(bets[0]['stake'] - (bets[0]['stake'] + o2), 2), round((bets[1]['stake'] * o2) - (bets[0]['stake'] + bets[1]['stake']), 2)]
+                "Bet 1": [o1, bets[0]['stake'], round(bets[0]['stake'] * o1, 2), round(bets[1]['stake'], 2), round((bets[0]['stake'] * o1) - (bets[0]['stake'] + bets[1]['stake']), 2), round(bets[1]['stake'] - (bets[0]['stake'] + bets[1]['stake']), 2)],
+                "Bet 2": [o2, bets[1]['stake'], round(bets[0]['stake'], 2), round(bets[1]['stake'] * o2, 2), round(bets[0]['stake'] - (bets[0]['stake'] + o2), 2), round((bets[1]['stake'] * o2) - (bets[0]['stake'] + bets[1]['stake']), 2)]
             }
             index = ["Odds", "Stake (£)", "Outcome 1 Return (£)", "Outcome 2 Return (£)", "Outcome 1 Profit/Loss (£)", "Outcome 2 Profit/Loss (£)"]
             df = pd.DataFrame(data, index=index)
