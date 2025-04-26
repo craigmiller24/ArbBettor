@@ -173,6 +173,10 @@ if __name__ == "__main__":
 
         fig, ax = plt.subplots()
         ax.plot(o2_range, roi_values)
+
+        ax.set_xlim(0, max_o2)
+        ax.set_ylim(-20, max(roi_values) + 5)
+
         ax.axhline(0, color='red', linestyle='--')
         ax.set_xlabel("Odds for Outcome 2")
         ax.set_ylabel("ROI (%)")
