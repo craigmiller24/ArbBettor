@@ -183,8 +183,8 @@ if __name__ == "__main__":
 
             # Create DataFrame for the table
             data = {
-                "Bet 1": [o1, stake1, f"{stake1 * o1} ({(stake1 * o1) - stake1})", f"{-stake1} ({-stake1})"],
-                "Bet 2": [o2, stake2, f"{-stake2} ({-stake2})", f"{stake2 * o2} ({(stake2 * o2) - stake2})"]
+                "Bet 1": [o1, stake1, f"{down(stake1 * o1)} ({down((stake1 * o1) - stake1)})", f"{down(-stake1)} ({down(-stake1)})"],
+                "Bet 2": [o2, stake2, f"{down(-stake2)} ({down(-stake2)})", f"{down(stake2 * o2)} ({down((stake2 * o2) - stake2)})"]
             }
             index = ["Odds", "Stake (£)", "Outcome 1 Return (Profit/Loss)(£)", "Outcome 2 Return (Profit/Loss)(£)"]
             df = pd.DataFrame(data, index=index)
