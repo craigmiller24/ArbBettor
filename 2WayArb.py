@@ -97,24 +97,6 @@ def split_stakes(bets: List[dict], payout: float, o1: float, o2: float) -> None:
     # Update the bets with the newly calculated stakes
     update_bet(bets, stake1, stake2)
 
-def find_required_odds(o1: float, min_roi: float) -> Tuple[Optional[float], Optional[float]]:
-    """
-    Calculate the required odds for the second outcome to achieve a desired minimum ROI.
-
-    Args:
-        o1 (float): The odds of the first bet.
-        min_roi (float): The desired minimum ROI in percentage.
-    Returns:
-        Tuple[float,float]: The required odds for the second outcome.
-    """
-    max_S = 1 / (1 + min_roi/100)
-    remaining = max_S - (1/o1)
-    if remaining <= 0:
-        return None, None
-    required_odds_min = 1 / remaining  # if known odds is smaller (we need other odds to be bigger)
-    required_odds_max = 1 / remaining  # if known odds is bigger (we need other odds to be smaller)
-    return round(required_odds_min, 3), round(required_odds_max, 3)
-
 def process_bets(o1: float, o2: float, T: float) -> Tuple[Optional[List[dict]], Optional[float], Optional[float]]:
     """
     Process the bets and calculate the payout and profit.
@@ -149,22 +131,9 @@ def process_bets(o1: float, o2: float, T: float) -> Tuple[Optional[List[dict]], 
 if __name__ == "__main__":
     st.title("2-Way Arbitrage Betting Calculator")
 
-    mode = st.radio("Select Mode", ("Calculate Optimal Stakes", "Find Required Odds for Target ROI"))
-
-    if mode == "Find Required Odds for Target ROI":
-        st.header("Input Known Odds and Desired Minimum ROI")
-        o1 = st.number_input("Known Odds (Decimal)", min_value=1.01, value=2.0, step=0.01)
-        min_roi = st.number_input("Minimum ROI (%)", min_value=0.0, value=0.5, step=0.1)
-
-        if st.button("Find Required Odds"):
-            required_odds_min, required_odds_max = find_required_odds(o1, min_roi)
-            if required_odds_min is None:
-                st.error("No suitable odds for second outcome to achieve the desired ROI.")
-            else:
-                st.success("Calculation Successful!")
-                st.write(f"Odds must be >= {required_odds_min} or <= {required_odds_max} to achieve a minimum ROI of {min_roi}%")
+    mode = st.radio("Select Mode", ("Calculate Optimal Stakes", "Potential ROI"))
     
-    elif mode == "Calculate Optimal Stakes":
+    if mode == "Calculate Optimal Stakes":
         st.header("Input Odds and Stake")
         o1 = st.number_input("Odds for Outcome 1 (Decimal)", min_value=0.01, value=2.0, step=0.01)
         o2 = st.number_input("Odds for Outcome 2 (Decimal)", min_value=0.01, value=2.0, step=0.01)
@@ -186,3 +155,27 @@ if __name__ == "__main__":
                 st.write(f"Stake on Bet 2: £{bets[1]['stake']}")
                 st.write(f"Guaranteed Profit: £{profit} ({roi:.2f}%)")
 
+    else:
+        st.header("Plot ROI vs Second Outcome Odds")
+        o1 = st.number_input("Input Known Odds (Decimal)", min_value=1.01, value=2.0, step=0.01)
+        max_o2 = st.slider("Max Odds for Outcome 2 (Decimal)", min_value=0, max_value=1000.0, value=5.0, step=0.01)
+        o2_range = np.linspace(0, max_o2, 500)
+        roi_values = []
+
+        for o2 in o2_range:
+            S = (1/known_odds) + (1/o2)
+            if S >= 1:
+                roi = -100  # No arbitrage, negative ROI
+            else:
+                roi = (1/S - 1) * 100
+            roi_values.append(roi)
+
+        fig, ax = plt.subplots()
+        ax.plot(odds2_range, roi_values)
+        ax.axhline(0, color='red', linestyle='--')
+        ax.set_xlabel("Odds for Outcome 2")
+        ax.set_ylabel("ROI (%)")
+        ax.set_title("ROI vs Odds for Outcome 2")
+        ax.grid(True)
+
+        st.pyplot(fig)
