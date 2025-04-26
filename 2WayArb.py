@@ -184,9 +184,9 @@ if __name__ == "__main__":
             data = {
                 "Bet 1": [o1, stake1, f"{down(stake1 * o1):.2f} ({down((stake1 * o1) - stake1):.2f})", f"{down(-stake1):.2f} ({down(-stake1):.2f})"],
                 "Bet 2": [o2, stake2, f"{down(-stake2):.2f} ({down(-stake2):.2f})", f"{down(stake2 * o2):.2f} ({down((stake2 * o2) - stake2):.2f})"],
-                "Total (£)": [None, T, down((stake1 * o1) - T), down((stake2 * o2) - T)]
+                "Total (£)": [None, f"{T:.2f}", f"{down((stake1 * o1) - T):.2f}", f"{down((stake2 * o2) - T):.2f}"]
             }
-            index = ["Odds", "Stake (£)", "Outcome 1 Return (Profit/Loss)(£)", "Outcome 2 Return (Profit/Loss)(£)"]
+            index = ["Odds (Decimal)", "Stake (£)", "Outcome 1 Return (Profit/Loss)(£)", "Outcome 2 Return (Profit/Loss)(£)"]
             df = pd.DataFrame(data, index=index)
 
             st.table(df)
@@ -194,6 +194,6 @@ if __name__ == "__main__":
             # Display guaranteed profit with larger font
             st.markdown(f"""
             <div style='text-align: center; font-size:24px; padding:10px; border:2px solid green; border-radius:10px;'>
-            Guaranteed Profit: <strong>£{profit}</strong> ({roi}%)
+            Guaranteed Profit: <strong>£{profit:.2f}</strong> ({roi:.2f}%)
             </div>
             """, unsafe_allow_html=True)
