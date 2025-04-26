@@ -182,11 +182,11 @@ if __name__ == "__main__":
 
             # Create DataFrame for the table
             data = {
-                "Bet 1": [o1, stake1, f"{down(stake1 * o1):.2f} ({down((stake1 * o1) - stake1):.2f})", f"{down(-stake1):.2f} ({down(-stake1):.2f})"],
-                "Bet 2": [o2, stake2, f"{down(-stake2):.2f} ({down(-stake2):.2f})", f"{down(stake2 * o2):.2f} ({down((stake2 * o2) - stake2):.2f})"],
+                "Bet 1 (Profit/Loss)": [o1, stake1, f"{down(stake1 * o1):.2f} ({down((stake1 * o1) - stake1):.2f})", f"{down(-stake1):.2f} ({down(-stake1):.2f})"],
+                "Bet 2 (Profit/Loss)": [o2, stake2, f"{down(-stake2):.2f} ({down(-stake2):.2f})", f"{down(stake2 * o2):.2f} ({down((stake2 * o2) - stake2):.2f})"],
                 "Total (£)": [None, f"{T:.2f}", f"{down((stake1 * o1) - T):.2f}", f"{down((stake2 * o2) - T):.2f}"]
             }
-            index = ["Odds (Decimal)", "Stake (£)", "Outcome 1 Return (Profit/Loss)(£)", "Outcome 2 Return (Profit/Loss)(£)"]
+            index = ["Odds (Decimal)", "Stake (£)", "Outcome 1 Return (£)", "Outcome 2 Return (£)"]
             df = pd.DataFrame(data, index=index)
 
             st.table(df)
