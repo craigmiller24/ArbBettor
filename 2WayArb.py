@@ -150,4 +150,4 @@ if __name__ == "__main__":
             st.success("Arbitrage Opportunity Found!")
             st.write(f"Stake on Bet 1: £{bets[0]['stake']}")
             st.write(f"Stake on Bet 2: £{bets[1]['stake']}")
-            st.write(f"Guaranteed Profit: £{profit} ({roi}%)")
+            st.write(f"Guaranteed Profit: £{profit} ({roi:.2f}%)")
