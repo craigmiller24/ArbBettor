@@ -178,15 +178,13 @@ if __name__ == "__main__":
             # Calculate the return on investment (ROI)
             roi = (profit / T) * 100
 
-            st.success("Arbitrage Opportunity Found!")
-            st.write(f"Stake on Bet 1 at odds {o1:.2f}: £{bets[0]['stake']}")
-            st.write(f"Stake on Bet 2 at odds {o2:.2f}: £{bets[1]['stake']}")
-            st.write(f"Guaranteed Profit: £{profit} ({roi:.2f}%)")
+            stake1 = bets[0]['stake']
+            stake2 = bets[1]['stake']
 
             # Create DataFrame for the table
             data = {
-                "Bet 1": [o1, bets[0]['stake'], round(bets[0]['stake'] * o1, 2), round(bets[1]['stake'], 2), round((bets[0]['stake'] * o1) - (bets[0]['stake'] + bets[1]['stake']), 2), round(bets[1]['stake'] - (bets[0]['stake'] + bets[1]['stake']), 2)],
-                "Bet 2": [o2, bets[1]['stake'], round(bets[0]['stake'], 2), round(bets[1]['stake'] * o2, 2), round(bets[0]['stake'] - (bets[0]['stake'] + o2), 2), round((bets[1]['stake'] * o2) - (bets[0]['stake'] + bets[1]['stake']), 2)]
+                "Bet 1": [stake1, stake1 * o1, -stake1, (stake1 * o1) - T, (stake2 * o2) - T],
+                "Bet 2": [stake2, -stake2, stake2 * o2, (stake1 * o1) - T, (stake2 * o2) - T]
             }
             index = ["Odds", "Stake (£)", "Outcome 1 Return (£)", "Outcome 2 Return (£)", "Outcome 1 Profit/Loss (£)", "Outcome 2 Profit/Loss (£)"]
             df = pd.DataFrame(data, index=index)
