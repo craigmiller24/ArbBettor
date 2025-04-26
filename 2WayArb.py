@@ -164,7 +164,7 @@ if __name__ == "__main__":
         roi_values = []
 
         for o2 in o2_range:
-            S = (1/known_odds) + (1/o2)
+            S = (1/o1) + (1/o2)
             if S >= 1:
                 roi = -100  # No arbitrage, negative ROI
             else:
