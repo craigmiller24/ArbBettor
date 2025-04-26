@@ -132,54 +132,48 @@ def process_bets(o1: float, o2: float, T: float) -> Tuple[Optional[List[dict]], 
 if __name__ == "__main__":
     st.title("2-Way Arbitrage Betting Calculator")
 
-    mode = st.radio("Select Mode", ("Calculate Optimal Stakes", "Potential ROI"))
-    
-    if mode == "Calculate Optimal Stakes":
-        st.header("Input Odds and Stake")
-        o1 = st.number_input("Odds for Outcome 1 (Decimal)", min_value=1.01, value=1.01, step=0.01)
-        o2 = st.number_input("Odds for Outcome 2 (Decimal)", min_value=1.01, value=1.01, step=0.01)
-        T = st.number_input("Total Stake (£)", min_value=0.01, value=100.0, step=1.0)
-
-        if st.button("Calculate Optimal Stakes"):
-            bets, payout, profit = process_bets(o1, o2, T)
-            
-            # If no valid betting opportunity is found, return None
-            if bets is None:
-                st.error("No arbitrage opportunity exists with these odds.")
-
-            else:
-                # Calculate the return on investment (ROI)
-                roi = (profit / T) * 100
-
-                st.success("Arbitrage Opportunity Found!")
-                st.write(f"Stake on Bet 1: £{bets[0]['stake']}")
-                st.write(f"Stake on Bet 2: £{bets[1]['stake']}")
-                st.write(f"Guaranteed Profit: £{profit} ({roi:.2f}%)")
-
-    else:
         st.header("Plot ROI vs Second Outcome Odds")
-        o1 = st.number_input("Input Known Odds (Decimal)", min_value=1.01, value=1.01, step=0.01)
-        max_o2 = st.slider("Max Odds for Outcome 2 (Decimal)", min_value=20.0, max_value=500.0, value=100.0, step=0.01)
-        o2_range = np.linspace(0, max_o2, 500)
-        roi_values = []
+    o1 = st.number_input("Input Known Odds (Decimal)", min_value=1.01, value=1.01, step=0.01)
+    max_o2 = st.slider("Max Odds for Outcome 2 (Decimal)", min_value=20.0, max_value=500.0, value=100.0, step=0.01)
+    o2_range = np.linspace(0, max_o2, 500)
+    roi_values = []
 
-        for o2 in o2_range:
-            S = (1/o1) + (1/o2)
-            if S >= 1:
-                roi = -100  # No arbitrage, negative ROI
-            else:
-                roi = (1/S - 1) * 100
-            roi_values.append(roi)
+    for o2 in o2_range:
+        S = (1/o1) + (1/o2)
+        roi = (1/S - 1) * 100
+        roi_values.append(roi)
 
-        fig, ax = plt.subplots()
-        ax.plot(o2_range, roi_values)
+    fig, ax = plt.subplots()
+    ax.plot(o2_range, roi_values)
 
-        ax.set_xlim(0, max_o2)
-        ax.set_ylim(0, max(roi_values) + 0.1 * max(roi_values))
+    ax.set_xlim(0, max_o2)
+    ax.set_ylim(0, max(roi_values) + 0.1 * max(roi_values))
 
-        ax.set_xlabel("Odds for Outcome 2")
-        ax.set_ylabel("ROI (%)")
-        ax.set_title("ROI vs Odds for Outcome 2")
-        ax.grid(True)
+    ax.set_xlabel("Odds for Outcome 2")
+    ax.set_ylabel("ROI (%)")
+    ax.set_title("ROI vs Odds for Outcome 2")
+    ax.grid(True)
 
-        st.pyplot(fig)
+    st.pyplot(fig)
+    
+    st.header("Input Odds and Stake")
+    o1 = st.number_input("Odds for Outcome 1 (Decimal)", min_value=1.01, value=1.01, step=0.01)
+    o2 = st.number_input("Odds for Outcome 2 (Decimal)", min_value=1.01, value=1.01, step=0.01)
+    T = st.number_input("Total Stake (£)", min_value=0.01, value=100.0, step=1.0)
+
+    if st.button("Calculate Optimal Stakes"):
+        bets, payout, profit = process_bets(o1, o2, T)
+            
+        # If no valid betting opportunity is found, return None
+        if bets is None:
+            st.error("No arbitrage opportunity exists with these odds.")
+
+        else:
+            # Calculate the return on investment (ROI)
+            roi = (profit / T) * 100
+
+            st.success("Arbitrage Opportunity Found!")
+            st.write(f"Stake on Bet 1: £{bets[0]['stake']}")
+            st.write(f"Stake on Bet 2: £{bets[1]['stake']}")
+            st.write(f"Guaranteed Profit: £{profit} ({roi:.2f}%)")
+
