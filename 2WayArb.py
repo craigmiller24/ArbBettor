@@ -136,8 +136,8 @@ if __name__ == "__main__":
     
     if mode == "Calculate Optimal Stakes":
         st.header("Input Odds and Stake")
-        o1 = st.number_input("Odds for Outcome 1 (Decimal)", min_value=1.01, value=1.0, step=0.01)
-        o2 = st.number_input("Odds for Outcome 2 (Decimal)", min_value=1.01, value=1.0, step=0.01)
+        o1 = st.number_input("Odds for Outcome 1 (Decimal)", min_value=1.01, value=1.01, step=0.01)
+        o2 = st.number_input("Odds for Outcome 2 (Decimal)", min_value=1.01, value=1.01, step=0.01)
         T = st.number_input("Total Stake (£)", min_value=0.01, value=100.0, step=1.0)
 
         if st.button("Calculate Optimal Stakes"):
