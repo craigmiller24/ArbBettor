@@ -3,6 +3,7 @@ import math as m
 import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
+import pandas as pd
 
 def down(val: float) -> float:
     """
@@ -182,3 +183,19 @@ if __name__ == "__main__":
             st.write(f"Stake on Bet 2 at odds {o2:.2f}: £{bets[1]['stake']}")
             st.write(f"Guaranteed Profit: £{profit} ({roi:.2f}%)")
 
+            # Create DataFrame for the table
+            data = {
+                "Outcome 1": [o1, bets[0]['stake'], round(bets[0]['stake'] * o1, 2), round(bets[1]['stake'], 2), round((bets[0]['stake'] * o1) - (bets[0]['stake'] + bets[1]['stake']), 2), round(bets[1]['stake'] - (bets[0]['stake'] + bets[1]['stake']), 2)],
+                "Outcome 2": [o2, bets[1]['stake'], round(bets[0]['stake'], 2), round(bets[1]['stake'] * o2, 2), round(bets[0]['stake'] - (bets[0]['stake'] + o2), 2), round((bets[1]['stake'] * o2) - (bets[0]['stake'] + bets[1]['stake']), 2)]
+            }
+            index = ["Odds", "Stake (£)", "Outcome 1 Return (£)", "Outcome 2 Return (£)", "Outcome 1 Profit/Loss (£)", "Outcome 2 Profit/Loss (£)"]
+            df = pd.DataFrame(data, index=index)
+
+            st.table(df)
+
+            # Display guaranteed profit with larger font
+            st.markdown(f"""
+            <div style='text-align: center; font-size:24px; padding:10px; border:2px solid green; border-radius:10px;'>
+            Guaranteed Profit: <strong>£{profit}</strong> ({roi}%)
+            </div>
+            """, unsafe_allow_html=True)
