@@ -70,7 +70,7 @@ def update_bet(bets: List[dict], stake1: float, stake2: float) -> None:
 
     # Calculate the return and profit for each bet and update the bet dictionaries
     for bet in bets:
-        bet['return'] = down(bet['stake'] * bet['odds'] + bet['stake'])
+        bet['return'] = down(bet['stake'] * bet['odds'])
         bet['profit'] = down(bet['return'] - bet['stake'])
 
 def split_stakes(bets: List[dict], payout: float, o1: float, o2: float) -> None:
