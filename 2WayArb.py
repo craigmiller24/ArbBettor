@@ -136,8 +136,8 @@ if __name__ == "__main__":
     
     if mode == "Calculate Optimal Stakes":
         st.header("Input Odds and Stake")
-        o1 = st.number_input("Odds for Outcome 1 (Decimal)", min_value=0.01, value=2.0, step=0.01)
-        o2 = st.number_input("Odds for Outcome 2 (Decimal)", min_value=0.01, value=2.0, step=0.01)
+        o1 = st.number_input("Odds for Outcome 1 (Decimal)", min_value=0.01, value=1.0, step=0.01)
+        o2 = st.number_input("Odds for Outcome 2 (Decimal)", min_value=0.01, value=1.0, step=0.01)
         T = st.number_input("Total Stake (£)", min_value=0.01, value=100.0, step=1.0)
 
         if st.button("Calculate Optimal Stakes"):
@@ -158,8 +158,8 @@ if __name__ == "__main__":
 
     else:
         st.header("Plot ROI vs Second Outcome Odds")
-        o1 = st.number_input("Input Known Odds (Decimal)", min_value=0.01, value=2.0, step=0.01)
-        max_o2 = st.slider("Max Odds for Outcome 2 (Decimal)", min_value=0.0, max_value=500.0, value=5.0, step=0.01)
+        o1 = st.number_input("Input Known Odds (Decimal)", min_value=0.01, value=1.0, step=0.01)
+        max_o2 = st.slider("Max Odds for Outcome 2 (Decimal)", min_value=100.0, max_value=500.0, value=5.0, step=0.01)
         o2_range = np.linspace(0, max_o2, 500)
         roi_values = []
 
