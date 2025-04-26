@@ -151,7 +151,8 @@ if __name__ == "__main__":
     ax.axhline(0, color='red', linestyle='--')
     ax.axvline(o2, color='green', linestyle='--')
     ax.axhline(roi_values[np.where(o2_range == o2)[0][0]], color='green', linestyle='--')
-    ax.plot(o2, roi_values[np.where(o2_range == o2)[0][0]], 'black', marker='x')
+    ax.plot(o2, roi_values[np.where(o2_range == o2)[0][0]], 'green', marker='x', label=f'ROI: {roi_values[np.where(o2_range == o2)[0][0]]:.2f}%')
+    ax.legend(loc='lower right')
 
     ax.set_xlim(0, max_o2)
     ax.set_ylim(-5, max(roi_values) + 0.1 * max(roi_values))
