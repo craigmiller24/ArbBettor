@@ -164,7 +164,7 @@ if __name__ == "__main__":
 
     st.pyplot(fig)
 
-    T = st.number_input("Set Stake (£)", min_value=0.01, value=100.0, step=1.0)
+    T = st.number_input("Set Stake (£)", min_value=0.01, value=100.0, step=step)
 
     if st.button("Calculate Stakes"):
         bets, payout, profit = process_bets(o1, o2, T)
@@ -192,6 +192,7 @@ if __name__ == "__main__":
             st.table(df)
 
             min_profit = min(down((stake1 * o1) - T), down((stake2 * o2) - T))
+
             # Display guaranteed profit with larger font
             st.markdown(f"""
             <div style='text-align: center; font-size:24px; padding:10px; border:2px solid green; border-radius:10px;'>
