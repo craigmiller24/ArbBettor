@@ -97,18 +97,18 @@ def split_stakes(bets: List[dict], payout: float, o1: float, o2: float) -> None:
     # Update the bets with the newly calculated stakes
     update_bet(bets, stake1, stake2)
 
-def find_required_odds(known_odds: float, min_roi: float) -> Tuple[Optional[float], Optional[float]]:
+def find_required_odds(o1: float, min_roi: float) -> Tuple[Optional[float], Optional[float]]:
     """
     Calculate the required odds for the second outcome to achieve a desired minimum ROI.
 
     Args:
-        known_odds (float): The odds of the first bet.
+        o1 (float): The odds of the first bet.
         min_roi (float): The desired minimum ROI in percentage.
     Returns:
         Tuple[float,float]: The required odds for the second outcome.
     """
     max_S = 1 / (1 + min_roi/100)
-    remaining = max_S - (1/known_odds)
+    remaining = max_S - (1/o1)
     if remaining <= 0:
         return None, None
     required_odds_min = 1 / remaining  # if known odds is smaller (we need other odds to be bigger)
@@ -157,7 +157,7 @@ if __name__ == "__main__":
         min_roi = st.number_input("Minimum ROI (%)", min_value=0.0, value=0.5, step=0.1)
 
         if st.button("Find Required Odds"):
-            required_odds_min, required_odds_max = find_required_odds(known_odds, min_roi)
+            required_odds_min, required_odds_max = find_required_odds(o1, min_roi)
             if required_odds_min is None:
                 st.error("No suitable odds for second outcome to achieve the desired ROI.")
             else:
